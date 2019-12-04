@@ -206,14 +206,16 @@ void put_card_in_deck_randomly(struct deck *deck, struct card card_given)
 void add_card_to_hand(struct hand *hand, struct card card_given)
 {
     //increase hand size
-    hand->size ++;
-    hand->cards = realloc(hand->cards, hand->size * sizeof(struct card));
+    hand->nb_cards ++;
+    hand->cards = realloc(hand->cards, hand->nb_cards * sizeof(struct card));
 
     //insert card in hand
-    hand->cards[hand->size - 1].value = card_given.value;
-    hand->cards[hand->size - 1].suit = card_given.suit;
-    hand->cards[hand->size - 1].face = card_given.face;
-    hand->cards[hand->size - 1].position = -1;
+    hand->cards[hand->nb_cards - 1].value = card_given.value;
+    hand->cards[hand->nb_cards - 1].suit = card_given.suit;
+    hand->cards[hand->nb_cards - 1].face = card_given.face;
+    hand->cards[hand->nb_cards - 1].position = -1;
+
+    hand->total = compute_hand_sum(hand);
 }
 
 
@@ -221,7 +223,7 @@ int compute_hand_sum(struct hand *hand_given)
 {
     int sum = 0;
 
-    for(int i = 0; i < hand_given->size; i++)
+    for(int i = 0; i < hand_given->nb_cards; i++)
     {
         sum = sum + hand_given->cards[i].value;
     }
@@ -252,7 +254,7 @@ void print_deck(struct deck *deck)
 
 void print_hand(struct hand *hand_given)
 {
-    for(int i = 0; i < hand_given->size; i++)
+    for(int i = 0; i < hand_given->nb_cards; i++)
     {
         if(strcmp(hand_given->cards[i].face, "none") == 0) {
             printf(" %d of %s  -  position: %d", hand_given->cards[i].value, hand_given->cards[i].suit, hand_given->cards[i].position);

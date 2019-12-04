@@ -15,5 +15,23 @@ void init_game(struct deck *deck)
 void init_hand(struct hand *hand)
 {
     hand->cards = malloc(0*sizeof(struct card));
-    hand->size = 0;
+    hand->nb_cards = 0;
+    hand->total = 0;
+}
+
+char read_player_decision()
+{
+    char decision;
+
+    printf("Press h to hit \nPress s to stay \n");
+    scanf("%c", &decision);
+
+    while(decision != 'h' && decision != 's')
+    {
+        printf("Please select valid entry \n");
+        scanf("%c", &decision);
+    }
+
+    return decision;
+
 }

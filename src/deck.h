@@ -29,8 +29,9 @@ struct deck {
 
 struct hand {
 
-    int size;
+    int nb_cards;
     struct card *cards;
+    int total;
 
 };
 
