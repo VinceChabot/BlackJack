@@ -219,6 +219,26 @@ void add_card_to_hand(struct hand *hand, struct card card_given)
 }
 
 
+void deal_card(struct deck *deck, struct hand *hand)
+{
+    struct card card_drawn;
+
+    draw_card(deck, &card_drawn);
+    add_card_to_hand(hand, card_drawn);
+
+    if(strcmp(card_drawn.face, "none") == 0)
+    {
+        printf("dealt %d of %s \n", card_drawn.value, card_drawn.suit);
+    }
+    else
+    {
+        printf("dealt %s of %s \n", card_drawn.face, card_drawn.suit);
+    }
+
+    printf("hand total is now %d \n", hand->total);
+}
+
+
 int compute_hand_sum(struct hand *hand_given)
 {
     int sum = 0;
@@ -248,7 +268,6 @@ void print_deck(struct deck *deck)
     }
 
     printf("\n");
-    printf("\n");
 }
 
 
@@ -268,9 +287,6 @@ void print_hand(struct hand *hand_given)
     }
 
     printf("\n");
-    printf("\n");
-
-
 }
 
 
@@ -286,6 +302,5 @@ void print_card(struct card card_given)
         printf(" %s of %s  -  position: %d", card_given.face, card_given.suit, card_given.position);
     }
 
-    printf("\n");
     printf("\n");
 }

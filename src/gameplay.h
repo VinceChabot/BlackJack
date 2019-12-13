@@ -10,4 +10,5 @@ void init_hand(struct hand *hand);
 char read_player_decision();
 
 
+
 #endif //BLACKJACK_GAMEPLAY_H

@@ -16,7 +16,7 @@ struct card {
     int value;      // 1 - 10
     char *face;     // none, jack, queen, king
     char *suit;     // spades, hearts, diamonds, clubs
-    int position;   // 0 - 51
+    int position;   // 0 - 51 , -1 if card is in a hand
 
 };
 
@@ -76,6 +76,12 @@ void put_card_randomly(struct deck *deck, struct card card_given);
  Adds a given card to a given hand
  */
 void add_card_to_hand(struct hand *player_hand, struct card card_given);
+
+
+/*
+ Deal a card to a hand by doing "draw_card" then "add_card_to_hand"
+ */
+void deal_card(struct deck *deck, struct hand *hand);
 
 
 /*

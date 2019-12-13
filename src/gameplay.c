@@ -23,15 +23,22 @@ char read_player_decision()
 {
     char decision;
 
-    printf("Press h to hit \nPress s to stay \n");
-    scanf("%c", &decision);
+
+    printf("Press h to hit \n"
+           "Press s to stay \n");
+
+
+    scanf(" %c", &decision);
 
     while(decision != 'h' && decision != 's')
     {
         printf("Please select valid entry \n");
-        scanf("%c", &decision);
+        scanf(" %c", &decision);
     }
+
+    printf("Player chose %c \n", decision);
 
     return decision;
 
 }
+
