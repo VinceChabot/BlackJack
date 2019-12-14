@@ -12,6 +12,15 @@ void init_game(struct deck *deck)
     shuffle_deck(deck);
 }
 
+
+void init_player(struct player *player, char* sex)
+{
+    init_hand(&player->hand);
+    player->money = 0;
+    player->sex = sex;
+}
+
+
 void init_hand(struct hand *hand)
 {
     hand->cards = malloc(0*sizeof(struct card));
@@ -39,3 +48,14 @@ char read_player_decision()
     return decision;
 }
 
+
+void win(struct player *player, int bet_amount)
+{
+    player->money = player->money + bet_amount;
+}
+
+
+void lose(struct player *player, int bet_amount)
+{
+    player->money = player->money - bet_amount;
+}

@@ -11,8 +11,8 @@
 
 enum suits {spades, hearts, diamonds, clubs};
 
-struct card {
-
+struct card
+{
     int value;      // 1 - 10
     char *face;     // none, jack, queen, king
     char *suit;     // spades, hearts, diamonds, clubs
@@ -20,15 +20,15 @@ struct card {
 
 };
 
-struct deck {
-
+struct deck
+{
     int size;
     struct card *cards;
 
 };
 
-struct hand {
-
+struct hand
+{
     int nb_cards;
     struct card *cards;
     int total;
