@@ -36,9 +36,6 @@ char read_player_decision()
         scanf(" %c", &decision);
     }
 
-    printf("Player chose %c \n", decision);
-
     return decision;
-
 }
 

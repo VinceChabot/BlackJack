@@ -39,19 +39,25 @@ int main() {
     //Card to dealer
     deal_card(&deck, &dealer_hand);
 
+    printf("\n");
+
     //Show both hands
     print_hand(&player_hand);
     print_hand(&dealer_hand);
 
+    //PLAYER DECISION PHASE
+    printf("\nPLAYER DECISION PHASE\n");
+    printf("Player has:\n");
+    print_hand(&player_hand);
+    printf("Total is %d \n\n", player_hand.total);
 
-    printf("PLAYER DECISION PHASE\n");
     player_decision = read_player_decision();
     while(player_decision == 'h')
     {
         deal_card(&deck, &player_hand);
         if(player_hand.total > 21)
         {
-            printf("Player busted at %d \n", player_hand.total);
+            printf("Player busted at %d, you lose \n", player_hand.total);
             return 0;
         }
 
@@ -63,21 +69,37 @@ int main() {
         printf("Player stayed at %d \n", player_hand.total);
     }
 
-
-    printf("PLAYER DECISION PHASE\n");
+    //DEALER DECISION PHASE
+    printf("\nDEALER DECISION PHASE\n");
+    printf("Dealer has:\n");
+    print_hand(&dealer_hand);
+    printf("Total is %d \n\n", dealer_hand.total);
     if(dealer_hand.total < 17 || dealer_hand.total < player_hand.total)
     {
         deal_card(&deck, &dealer_hand);
 
         if(dealer_hand.total > 21)
         {
-            printf("dealer bust at %d \n", dealer_hand.total);
+            printf("dealer bust at %d, you win \n", dealer_hand.total);
             return 0;
         }
     }
-    else
+
+    //END OF GAME
+    printf("Player total is %d \n", player_hand.total);
+    printf("Dealer total is %d \n", dealer_hand.total);
+
+    if(player_hand.total > dealer_hand.total)
     {
-        //End of hand
+        printf("\nYou win!");
+    }
+    else if(player_hand.total < dealer_hand.total)
+    {
+        printf("\nYou lose!");
+    }
+    else if(player_hand.total == dealer_hand.total)
+    {
+        printf("\nEqual, push");
     }
 
     return 0;

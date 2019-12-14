@@ -235,7 +235,7 @@ void deal_card(struct deck *deck, struct hand *hand)
         printf("dealt %s of %s \n", card_drawn.face, card_drawn.suit);
     }
 
-    printf("hand total is now %d \n", hand->total);
+    printf("hand total is now %d \n\n", hand->total);
 }
 
 
@@ -257,11 +257,11 @@ void print_deck(struct deck *deck)
     for(int i = 0; i < deck->size; i++)
     {
         if(strcmp(deck->cards[i].face, "none") == 0) {
-            printf(" %d of %-15s  -  position: %d", deck->cards[i].value, deck->cards[i].suit, deck->cards[i].position);
+            printf("%d of %-15s  -  position: %d", deck->cards[i].value, deck->cards[i].suit, deck->cards[i].position);
         }
         else
         {
-            printf(" %s of %-12s  -  position: %d", deck->cards[i].face, deck->cards[i].suit, deck->cards[i].position);
+            printf("%s of %-12s  -  position: %d", deck->cards[i].face, deck->cards[i].suit, deck->cards[i].position);
         }
 
         printf("\n");
@@ -276,30 +276,28 @@ void print_hand(struct hand *hand_given)
     for(int i = 0; i < hand_given->nb_cards; i++)
     {
         if(strcmp(hand_given->cards[i].face, "none") == 0) {
-            printf(" %d of %s  -  position: %d", hand_given->cards[i].value, hand_given->cards[i].suit, hand_given->cards[i].position);
+            printf("%d of %s", hand_given->cards[i].value, hand_given->cards[i].suit);
         }
         else
         {
-            printf(" %s of %s  -  position: %d", hand_given->cards[i].face, hand_given->cards[i].suit, hand_given->cards[i].position);
+            printf("%s of %s", hand_given->cards[i].face, hand_given->cards[i].suit);
         }
 
         printf("\n");
     }
-
-    printf("\n");
 }
 
 
 void print_card(struct card card_given)
 {
-    printf(" %d of %s  -  position: %d", card_given.value, card_given.suit, card_given.position);
+    printf("%d of %s  -  position: %d", card_given.value, card_given.suit, card_given.position);
 
     if(card_given.face == "none") {
-        printf(" %d of %s  -  position: %d", card_given.value, card_given.suit, card_given.position);
+        printf("%d of %s  -  position: %d", card_given.value, card_given.suit, card_given.position);
     }
     else
     {
-        printf(" %s of %s  -  position: %d", card_given.face, card_given.suit, card_given.position);
+        printf("%s of %s  -  position: %d", card_given.face, card_given.suit, card_given.position);
     }
 
     printf("\n");
