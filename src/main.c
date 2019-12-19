@@ -15,44 +15,34 @@ Position 52 is the top of the deck (first card to be drawn)
 int main() {
 
     struct deck deck;
-    struct hand player_hand;
-    struct hand dealer_hand;
-    struct card card_drawn;
+    //struct hand dealer_hand;
     char player_decision;
-    int bet_amount;
 
     struct player player1;
+    struct player dealer;
 
-    init_player(&player1, "male");
+    init_player(&player1, "male", "player1");
+    init_player(&dealer, "male", "dealer");
 
     //Initialize start of game
     init_game(&deck);
-    //init_hand(&player1.hand);
-    init_hand(&dealer_hand);
 
     print_deck(&deck);
 
-
-    printf("Enter amount to bet\n");
-    scanf("%d", &bet_amount);
-    while(bet_amount < 0 || bet_amount > 500)
-    {
-        printf("Enter valid amount to bet\n");
-        scanf("%d", &bet_amount);
-    }
-    printf("Entered: %d \n", bet_amount);
+    //Read player bet
+    enter_bet(&player1);
 
     //Card to player
     deal_card(&deck, &player1.hand);
 
     //Card to dealer
-    deal_card(&deck, &dealer_hand);
+    deal_card(&deck, &dealer.hand);
 
     //Card to player
     deal_card(&deck, &player1.hand);
 
     //Card to dealer
-    deal_card(&deck, &dealer_hand);
+    deal_card(&deck, &dealer.hand);
 
     printf("\n");
 
@@ -60,7 +50,7 @@ int main() {
     printf("Player hand:\n");
     print_hand(&player1.hand);
     printf("\nDealer hand:\n");
-    print_hand(&dealer_hand);
+    print_hand(&dealer.hand);
 
     /*PLAYER DECISION PHASE*/
     printf("\nPLAYER DECISION PHASE\n");
@@ -75,7 +65,7 @@ int main() {
         if(player1.hand.total > 21)
         {
             printf("Player busted at %d, you lose \n", player1.hand.total);
-            lose(&player1, bet_amount);
+            lose(&player1, player1.bet_amount);
             return 0;
         }
 
@@ -90,39 +80,37 @@ int main() {
     /*DEALER DECISION PHASE*/
     printf("\nDEALER DECISION PHASE\n");
     printf("Dealer has:\n");
-    print_hand(&dealer_hand);
-    printf("Total is %d \n\n", dealer_hand.total);
-    while(dealer_hand.total < 17 || dealer_hand.total < player1.hand.total)
+    print_hand(&dealer.hand);
+    printf("Total is %d \n\n", dealer.hand.total);
+    while(dealer.hand.total < 17 || dealer.hand.total < player1.hand.total)
     {
-        deal_card(&deck, &dealer_hand);
+        deal_card(&deck, &dealer.hand);
 
-        if(dealer_hand.total > 21)
+        if(dealer.hand.total > 21)
         {
-            printf("dealer bust at %d, you win \n", dealer_hand.total);
-            win(&player1, bet_amount);
+            printf("dealer bust at %d, you win \n", dealer.hand.total);
+            win(&player1, player1.bet_amount);
             return 0;
         }
     }
-    printf("dealer stays at %d \n", dealer_hand.total);
+    printf("dealer stays at %d \n", dealer.hand.total);
 
     /*END OF GAME*/
     printf("\n");
     printf("Player total is %d \n", player1.hand.total);
-    printf("Dealer total is %d \n", dealer_hand.total);
+    printf("Dealer total is %d \n", dealer.hand.total);
 
-    if(player1.hand.total > dealer_hand.total)
+    if(player1.hand.total > dealer.hand.total)
     {
-        printf("\nYou win!");
-        win(&player1, bet_amount);
+        win(&player1, player1.bet_amount);
     }
-    else if(player1.hand.total < dealer_hand.total)
+    else if(player1.hand.total < dealer.hand.total)
     {
-        printf("\nYou lose!");
-        lose(&player1, bet_amount);
+        lose(&player1, player1.bet_amount);
     }
-    else if(player1.hand.total == dealer_hand.total)
+    else if(player1.hand.total == dealer.hand.total)
     {
-        printf("\nEqual, push");
+        push(&player1, player1.bet_amount);
     }
 
     return 0;

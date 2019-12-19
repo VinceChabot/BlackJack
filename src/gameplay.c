@@ -4,6 +4,7 @@
 
 #include "deck.h"
 #include "gameplay.h"
+#include <math.h>
 
 void init_game(struct deck *deck)
 {
@@ -13,11 +14,13 @@ void init_game(struct deck *deck)
 }
 
 
-void init_player(struct player *player, char* sex)
+void init_player(struct player *player, char* sex, char* name)
 {
     init_hand(&player->hand);
-    player->money = 0;
+    player->name = name;
+    player->money = INITIAL_PLAYER_MONEY;
     player->sex = sex;
+    player->bet_amount = 0;
 }
 
 
@@ -28,6 +31,26 @@ void init_hand(struct hand *hand)
     hand->total = 0;
 }
 
+char enter_bet(struct player *player)
+{
+    int scan_return;
+
+    printf("Enter amount to bet\n");
+    scan_return = scanf(" %d", &player->bet_amount);
+    while(getchar() != '\n'); //Used to empty scanf buffer
+
+    while(player->bet_amount < 0 || player->bet_amount > 500 || scan_return == 0)
+    {
+        printf("Enter valid amount to bet\n");
+        scan_return = scanf(" %d", &player->bet_amount);
+        while(getchar() != '\n'); //Used to empty scanf buffer
+    }
+
+    round(player->bet_amount);
+    printf("Player bet: %d \n", player->bet_amount);
+    printf("\n");
+}
+
 char read_player_decision()
 {
     char decision;
@@ -36,13 +59,14 @@ char read_player_decision()
     printf("Press h to hit \n"
            "Press s to stay \n");
 
-
     scanf(" %c", &decision);
+    while(getchar() != '\n'); //Used to empty scanf buffer
 
     while(decision != 'h' && decision != 's')
     {
         printf("Please select valid entry \n");
         scanf(" %c", &decision);
+        while(getchar() != '\n'); //Used to empty scanf buffer
     }
 
     return decision;
@@ -51,11 +75,21 @@ char read_player_decision()
 
 void win(struct player *player, int bet_amount)
 {
+    printf("\nYou win!");
     player->money = player->money + bet_amount;
+    printf("\nplayer now has %d money", player->money);
 }
 
 
 void lose(struct player *player, int bet_amount)
 {
+    printf("\nYou lose!");
     player->money = player->money - bet_amount;
+    printf("\nplayer now has %d money", player->money);
+}
+
+void push(struct player *player, int bet_amount)
+{
+    printf("\nEqual, push");
+    printf("\nplayer now has %d money", player->money);
 }
