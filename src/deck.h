@@ -22,7 +22,7 @@ struct card
 
 struct deck
 {
-    int size;
+    int nb_cards;
     struct card *cards;
 
 };
@@ -82,6 +82,12 @@ void add_card_to_hand(struct hand *player_hand, struct card card_given);
  Deal a card to a hand by doing "draw_card" then "add_card_to_hand"
  */
 void deal_card(struct deck *deck, struct hand *hand);
+
+
+ /*
+ Empties out all the cards in a hand and puts them in the discard pile
+ */
+void discard_hand(struct hand *hand, struct deck *discard_pile);
 
 
 /*

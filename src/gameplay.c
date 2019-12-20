@@ -2,15 +2,21 @@
 // Created by Vince on 2019-11-29.
 //
 
+#include "constants.h"
 #include "deck.h"
 #include "gameplay.h"
 #include <math.h>
 
-void init_game(struct deck *deck)
+void init_game(struct deck *deck, struct deck *discard_pile)
 {
+    //Create and shuffle deck
     deck->cards = malloc(52*sizeof(struct card));
     create_deck(deck);
     shuffle_deck(deck);
+
+    //Create discard pile
+    discard_pile->nb_cards = 0;
+    discard_pile->cards = malloc(0*sizeof(struct card));
 }
 
 
@@ -21,6 +27,7 @@ void init_player(struct player *player, char* sex, char* name)
     player->money = INITIAL_PLAYER_MONEY;
     player->sex = sex;
     player->bet_amount = 0;
+    player->isBust = NO;
 }
 
 
@@ -35,11 +42,11 @@ char enter_bet(struct player *player)
 {
     int scan_return;
 
-    printf("Enter amount to bet\n");
+    printf("\nEnter amount to bet\n");
     scan_return = scanf(" %d", &player->bet_amount);
     while(getchar() != '\n'); //Used to empty scanf buffer
 
-    while(player->bet_amount < 0 || player->bet_amount > 500 || scan_return == 0)
+    while(player->bet_amount < MIN_BET || player->bet_amount > MAX_BET || scan_return == 0)
     {
         printf("Enter valid amount to bet\n");
         scan_return = scanf(" %d", &player->bet_amount);
@@ -51,18 +58,41 @@ char enter_bet(struct player *player)
     printf("\n");
 }
 
-char read_player_decision()
+char read_player_action()
 {
-    char decision;
+    char action;
 
 
     printf("Press h to hit \n"
            "Press s to stay \n");
 
+    scanf(" %c", &action);
+    while(getchar() != '\n'); //Used to empty scanf buffer
+
+    while(action != 'h' && action != 's')
+    {
+        printf("Please select valid entry \n");
+        scanf(" %c", &action);
+        while(getchar() != '\n'); //Used to empty scanf buffer
+    }
+
+    return action;
+}
+
+
+char read_player_decision()
+{
+    char decision;
+
+    printf("\nAnother round?\n");
+
+    printf("Yes (y) \n"
+           "No  (n) \n");
+
     scanf(" %c", &decision);
     while(getchar() != '\n'); //Used to empty scanf buffer
 
-    while(decision != 'h' && decision != 's')
+    while(decision != 'y' && decision != 'n')
     {
         printf("Please select valid entry \n");
         scanf(" %c", &decision);

@@ -2,6 +2,7 @@
 // Created by Vince on 2019-11-28.
 //
 
+#include "constants.h"
 #include "deck.h"
 #include "string.h"
 
@@ -12,7 +13,7 @@ void create_deck(struct deck *deck)
     int current_suit = spades;
     int deck_position = 0;
 
-    deck->size = 52;
+    deck->nb_cards = 52;
 
     //go through suits
     for(i = 1; i <= 4; i++)
@@ -94,8 +95,8 @@ void shuffle_deck(struct deck *deck)
     for(int i = 0; i < 150; i++)
     {
         //randomly choose two cards to swap
-        first_card_to_swap = rand() % deck->size;
-        second_card_to_swap = rand() % deck->size;
+        first_card_to_swap = rand() % deck->nb_cards;
+        second_card_to_swap = rand() % deck->nb_cards;
 
         //temp values used to store a card while doing the swap
         temp_suit =  deck->cards[first_card_to_swap].suit;
@@ -117,34 +118,34 @@ void shuffle_deck(struct deck *deck)
 
 void draw_card(struct deck *deck, struct card *card_drawn)
 {
-    deck->size --;
-    *card_drawn = deck->cards[deck->size];
-    deck->cards = realloc(deck->cards, deck->size * sizeof(struct card));
+    deck->nb_cards --;
+    *card_drawn = deck->cards[deck->nb_cards];
+    deck->cards = realloc(deck->cards, deck->nb_cards * sizeof(struct card));
 }
 
 
 void put_card_on_top_of_deck(struct deck *deck, struct card card_given)
 {
     //increment deck size
-    deck->size ++;
-    deck->cards = realloc(deck->cards, deck->size * sizeof(struct card));
+    deck->nb_cards ++;
+    deck->cards = realloc(deck->cards, deck->nb_cards * sizeof(struct card));
 
     //insert card on top of deck
-    deck->cards[deck->size - 1].value = card_given.value;
-    deck->cards[deck->size - 1].suit = card_given.suit;
-    deck->cards[deck->size - 1].face = card_given.face;
-    deck->cards[deck->size - 1].position = deck->size - 1;
+    deck->cards[deck->nb_cards - 1].value = card_given.value;
+    deck->cards[deck->nb_cards - 1].suit = card_given.suit;
+    deck->cards[deck->nb_cards - 1].face = card_given.face;
+    deck->cards[deck->nb_cards - 1].position = deck->nb_cards - 1;
 }
 
 
 void put_card_at_bottom_of_deck(struct deck *deck, struct card card_given)
 {
     //increment deck size
-    deck->size ++;
-    deck->cards = realloc(deck->cards, deck->size * sizeof(struct card));
+    deck->nb_cards ++;
+    deck->cards = realloc(deck->cards, deck->nb_cards * sizeof(struct card));
 
     //move all cards up by one position
-    for(int i = deck->size - 1; i >= 0; i--)
+    for(int i = deck->nb_cards - 1; i >= 0; i--)
     {
         deck->cards[i].value = deck->cards[i-1].value;
         deck->cards[i].suit = deck->cards[i-1].suit;
@@ -167,26 +168,26 @@ void put_card_in_deck_randomly(struct deck *deck, struct card card_given)
     srand((unsigned) time(&t));
 
     //choose random position in deck
-    int random_position = rand() % deck->size;
+    int random_position = rand() % deck->nb_cards;
 
     printf("position is %d \n", random_position);
 
     //increment deck size
-    deck->size ++;
-    deck->cards = realloc(deck->cards, deck->size * sizeof(struct card));
+    deck->nb_cards ++;
+    deck->cards = realloc(deck->cards, deck->nb_cards * sizeof(struct card));
 
     if(random_position == 0)
     {
         put_card_at_bottom_of_deck(deck, card_given);
     }
-    else if(random_position == deck->size - 1)
+    else if(random_position == deck->nb_cards - 1)
     {
         put_card_on_top_of_deck(deck, card_given);
     }
     else
     {
         //move up cards above the random position
-        for(int i = deck->size - 1; i >= random_position; i--)
+        for(int i = deck->nb_cards - 1; i >= random_position; i--)
         {
             deck->cards[i].value = deck->cards[i-1].value;
             deck->cards[i].suit = deck->cards[i-1].suit;
@@ -226,18 +227,33 @@ void deal_card(struct deck *deck, struct hand *hand)
     draw_card(deck, &card_drawn);
     add_card_to_hand(hand, card_drawn);
 
-    if(strcmp(card_drawn.face, "none") == 0)
+    if(DEBUG_MODE == 1)
     {
-        printf("dealt %d of %s \n", card_drawn.value, card_drawn.suit);
-    }
-    else
-    {
-        printf("dealt %s of %s \n", card_drawn.face, card_drawn.suit);
-    }
+        if (strcmp(card_drawn.face, "none") == 0) {
+            printf("dealt %d of %s \n", card_drawn.value, card_drawn.suit);
+        } else {
+            printf("dealt %s of %s \n", card_drawn.face, card_drawn.suit);
+        }
 
-    printf("hand total is now %d \n\n", hand->total);
+        printf("hand total is now %d \n\n", hand->total);
+    }
 }
 
+void discard_hand(struct hand *hand, struct deck *discard_pile)
+{
+    int i;
+
+    //Copy cards to discard pile
+    for(i = 0; i < hand->nb_cards; i++)
+    {
+        put_card_on_top_of_deck(discard_pile, hand->cards[i]);
+    }
+
+    //Empty hand
+    hand->total = 0;
+    hand->nb_cards = 0;
+    hand->cards = realloc(hand->cards, hand->nb_cards * sizeof(struct card));
+}
 
 int compute_hand_sum(struct hand *hand_given)
 {
@@ -254,36 +270,46 @@ int compute_hand_sum(struct hand *hand_given)
 
 void print_deck(struct deck *deck)
 {
-    for(int i = 0; i < deck->size; i++)
+    if(deck->nb_cards == 0)
     {
-        if(strcmp(deck->cards[i].face, "none") == 0) {
-            printf("%d of %-15s  -  position: %d", deck->cards[i].value, deck->cards[i].suit, deck->cards[i].position);
-        }
-        else
-        {
-            printf("%s of %-12s  -  position: %d", deck->cards[i].face, deck->cards[i].suit, deck->cards[i].position);
+        printf("\nDeck is empty");
+    }
+    else
+    {
+        for (int i = 0; i < deck->nb_cards; i++) {
+            if (strcmp(deck->cards[i].face, "none") == 0) {
+                printf("%d of %-15s  -  position: %d", deck->cards[i].value, deck->cards[i].suit,
+                       deck->cards[i].position);
+            } else {
+                printf("%s of %-12s  -  position: %d", deck->cards[i].face, deck->cards[i].suit,
+                       deck->cards[i].position);
+            }
+
+            printf("\n");
         }
 
         printf("\n");
     }
-
-    printf("\n");
 }
 
 
 void print_hand(struct hand *hand_given)
 {
-    for(int i = 0; i < hand_given->nb_cards; i++)
+    if(hand_given->nb_cards == 0)
     {
-        if(strcmp(hand_given->cards[i].face, "none") == 0) {
-            printf("%d of %s", hand_given->cards[i].value, hand_given->cards[i].suit);
-        }
-        else
-        {
-            printf("%s of %s", hand_given->cards[i].face, hand_given->cards[i].suit);
-        }
+        printf("\nHand is empty");
+    }
+    else
+    {
+        for (int i = 0; i < hand_given->nb_cards; i++) {
+            if (strcmp(hand_given->cards[i].face, "none") == 0) {
+                printf("%d of %s", hand_given->cards[i].value, hand_given->cards[i].suit);
+            } else {
+                printf("%s of %s", hand_given->cards[i].face, hand_given->cards[i].suit);
+            }
 
-        printf("\n");
+            printf("\n");
+        }
     }
 }
 
