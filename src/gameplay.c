@@ -38,25 +38,56 @@ void init_hand(struct hand *hand)
     hand->total = 0;
 }
 
+
 char enter_bet(struct player *player)
 {
     int scan_return;
+    int bet_is_valid = YES;
 
     printf("\nEnter amount to bet\n");
-    scan_return = scanf(" %d", &player->bet_amount);
-    while(getchar() != '\n'); //Used to empty scanf buffer
 
-    while(player->bet_amount < MIN_BET || player->bet_amount > MAX_BET || scan_return == 0)
+    do
     {
-        printf("Enter valid amount to bet\n");
         scan_return = scanf(" %d", &player->bet_amount);
         while(getchar() != '\n'); //Used to empty scanf buffer
-    }
+
+        if(scan_return == 0)
+        {
+            printf("Enter valid amount to bet\n");
+            bet_is_valid = NO;
+        }
+
+        else if(player->bet_amount < MIN_BET)
+        {
+            printf("Bet is too small, enter a valid amount to bet\n");
+            bet_is_valid = NO;
+        }
+
+        else if(player->bet_amount > MAX_BET)
+        {
+            printf("Bet is too big, enter a valid amount to bet\n");
+            bet_is_valid = NO;
+        }
+
+        else if(player->money < player->bet_amount)
+        {
+            printf("Not enough money to place that bet, enter valid amount to bet\n");
+            bet_is_valid = NO;
+        }
+
+        else
+        {
+            bet_is_valid = YES;
+        }
+
+    } while(bet_is_valid == NO);
+
 
     round(player->bet_amount);
     printf("Player bet: %d \n", player->bet_amount);
     printf("\n");
 }
+
 
 char read_player_action()
 {
@@ -117,6 +148,7 @@ void lose(struct player *player, int bet_amount)
     player->money = player->money - bet_amount;
     printf("\nplayer now has %d money", player->money);
 }
+
 
 void push(struct player *player, int bet_amount)
 {
